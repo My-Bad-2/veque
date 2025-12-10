@@ -12,13 +12,11 @@
 
 #include <algorithm>
 #include <cstddef>
-#include <cstring>
+#include <string.h>
 #include <iterator>
 #include <limits>
 #include <ratio>
-#include <string>
 #include <type_traits>
-#include <stdexcept>
 #include <utility>
 
 namespace veque
@@ -244,7 +242,7 @@ namespace veque
         {
             if ( idx >= size() )
             {
-                throw std::out_of_range("veque<T,ResizeTraits,Alloc>::at(" + std::to_string(idx) + ") out of range");
+                return;
             }
             return (*this)[idx];
         }
@@ -253,7 +251,7 @@ namespace veque
         {
             if ( idx >= size() )
             {
-                throw std::out_of_range("veque<T,ResizeTraits,Alloc>::at(" + std::to_string(idx) + ") out of range");
+                return;
             }
             return (*this)[idx];
         }
@@ -401,7 +399,7 @@ namespace veque
                 
                 if ( new_full_capacity > max_size() )
                 {
-                    throw std::length_error("veque<T,ResizeTraits,Alloc>::reserve(" + std::to_string(front) + ", " + std::to_string(back) + ") exceeds max_size()");
+                    return;
                 }
                 _reallocate( new_full_capacity, allocated_before_begin );
             }
@@ -877,7 +875,7 @@ namespace veque
             {
                 if constexpr ( sizeof...(args) == 0 )
                 {
-                    std::memset( _mutable_iterator(b), 0, std::distance( b, e ) * sizeof(T) );
+                    memset( _mutable_iterator(b), 0, std::distance( b, e ) * sizeof(T) );
                 }
                 else
                 {
@@ -899,7 +897,7 @@ namespace veque
             static_assert( std::is_convertible_v<typename std::iterator_traits<It>::iterator_category,std::forward_iterator_tag> );
             if constexpr ( std::is_trivially_copy_constructible_v<T> && _calls_copy_constructor_directly )
             {
-                std::memcpy( _mutable_iterator(dest), b, std::distance( b, e ) * sizeof(T) );
+                memcpy( _mutable_iterator(dest), b, std::distance( b, e ) * sizeof(T) );
             }
             else
             {
@@ -1155,7 +1153,7 @@ namespace veque
                 auto dest = start - count;
                 if constexpr ( std::is_trivially_copyable_v<T> && std::is_trivially_copy_constructible_v<T> && _calls_copy_constructor_directly )
                 {
-                    std::memmove( dest, start, element_count * sizeof(T) );
+                    memmove( dest, start, element_count * sizeof(T) );
                 }
                 else
                 {
@@ -1191,7 +1189,7 @@ namespace veque
             {
                 if constexpr ( std::is_trivially_copyable_v<T> && std::is_trivially_copy_constructible_v<T> && _calls_copy_constructor_directly )
                 {
-                    std::memmove( start + count, start, element_count * sizeof(T) );
+                    memmove( start + count, start, element_count * sizeof(T) );
                 }
                 else
                 {
@@ -1339,7 +1337,7 @@ namespace veque
             {
                 if constexpr ( std::is_trivially_copy_constructible_v<T> && _calls_copy_constructor_directly )
                 {
-                    std::memcpy( dest, b, size * sizeof(T) );
+                    memcpy( dest, b, size * sizeof(T) );
                 }
                 else
                 {
